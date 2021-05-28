@@ -1,31 +1,32 @@
-import classes from '../todo.module.css';
-import React, { useState } from 'react';
+import classes from "../todo.module.css";
+import React, { useContext, useState } from "react";
+import { todoContext } from "../../TodoContext";
 
 export default function TodoEdit(props) {
-  const { currentTitle, todoList, setTodoList, index, setEditingTodo } = props;
+    const { title: todoTitle, id } = props.data;
 
-  const [title, setTitle] = useState(currentTitle);
+    const [title, setTitle] = useState(todoTitle);
 
-  const handleEdit = (e) => {
-    e.preventDefault();
-    setTodoList(
-      todoList.map((todo, i) => (i === index ? { ...todo, title } : todo))
+    const { changeTodo } = useContext(todoContext);
+
+    const handleEdit = (e) => {
+        e.preventDefault();
+        // call func to change todo in server and state
+        changeTodo(id, title);
+    };
+
+    return (
+        <li className={classes.editingTodo}>
+            <form onSubmit={handleEdit}>
+                <input
+                    onChange={(e) => setTitle(e.target.value)}
+                    type="text"
+                    name="title"
+                    required
+                    value={title}
+                />
+                <button>Edit</button>
+            </form>
+        </li>
     );
-    setEditingTodo(null);
-  };
-
-  return (
-    <li className={classes.editingTodo}>
-      <form onSubmit={handleEdit}>
-        <input
-          onChange={(e) => setTitle(e.target.value)}
-          type="text"
-          name="title"
-          required
-          value={title}
-        />
-        <button>Edit</button>
-      </form>
-    </li>
-  );
 }

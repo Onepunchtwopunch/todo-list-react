@@ -1,50 +1,27 @@
-import React, { useState } from 'react';
-import classes from '../todo.module.css';
-import TodoEdit from './TodoEdit';
-import TodoItem from './TodoItem';
+import React, { useContext, useEffect, useState } from "react";
+import { todoContext } from "../../TodoContext";
+import classes from "../todo.module.css";
+import TodoEdit from "./TodoEdit";
+import TodoItem from "./TodoItem";
 
-export default function TodoList(props) {
-  const { todoList, setTodoList } = props;
+export default function TodoList() {
+    const { todoList, fetchTodos, editId } = useContext(todoContext);
 
-  const [editingTodo, setEditingTodo] = useState(null);
+    useEffect(() => {
+        fetchTodos();
+    }, []);
 
-  const removeTodo = (index) => {
-    setTodoList(todoList.filter((_, i) => i !== index));
-  };
+    console.log(todoList);
 
-  const handleIsDoneChange = (index) => {
-    setTodoList(
-      todoList.map((todo, i) =>
-        index === i ? { ...todo, isDone: !todo.isDone } : todo
-      )
+    return (
+        <ul className={classes.todoList}>
+            {todoList.map((todo) =>
+                todo.id === editId ? (
+                    <TodoEdit data={todo} key={todo.id} />
+                ) : (
+                    <TodoItem data={todo} key={todo.id} />
+                )
+            )}
+        </ul>
     );
-  };
-
-  const handleEditClick = (index) => {
-    setEditingTodo(index);
-  };
-
-  return (
-    <ul className={classes.todoList}>
-      {todoList.map((todo, index) =>
-        index === editingTodo ? (
-          <TodoEdit
-            currentTitle={todo.title}
-            todoList={todoList}
-            setTodoList={setTodoList}
-            index={index}
-            setEditingTodo={setEditingTodo}
-          />
-        ) : (
-          <TodoItem
-            todo={todo}
-            index={index}
-            handleIsDoneChange={handleIsDoneChange}
-            removeTodo={removeTodo}
-            handleEditClick={handleEditClick}
-          />
-        )
-      )}
-    </ul>
-  );
 }

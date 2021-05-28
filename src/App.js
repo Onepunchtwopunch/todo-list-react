@@ -1,12 +1,13 @@
-import React from 'react';
-import Todo from './Todo';
+import React from "react";
+import Todo from "./Todo";
+import TodoContextProvider from "./TodoContext";
 
 function App() {
-  return (
-    <div className="App">
-      <Todo />
-    </div>
-  );
+    return (
+        <TodoContextProvider>
+            <Todo />
+        </TodoContextProvider>
+    );
 }
 
 export default App;
